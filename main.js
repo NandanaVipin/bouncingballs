@@ -51,59 +51,9 @@ class Ball {
         this.draw();
     }
 
-    reposition(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    collidesWith(other) {
-        const distX = this.x - other.x;
-        const distY = this.y - other.y;
-        const distance = Math.sqrt(distX * distX + distY * distY);
-        return distance < this.radius + other.radius;
-    }
-}
-
-const balls = [];
-let vanishedBalls = 0;
-
-// Generate bouncing balls
-for (let i = 0; i < 30; i++) {
-    let radius = 18;
-    let x = Math.random() * (innerWidth - 2 * radius) + radius;
-    let y = Math.random() * (innerHeight - 2 * radius) + radius;
-    let dx = (Math.random() - 0.5) * 8;
-    let dy = (Math.random() - 0.5) * 8;
-    balls.push(new Ball(x, y, radius, dx, dy));
-}
-
-// Special interactive ball
-const playerBall = new Ball(innerWidth / 2, innerHeight / 2, 20, 0, 0, '#FFF', true);
-balls.push(playerBall);
-
-// Track mouse movement to move player ball
-window.addEventListener('mousemove', (event) => {
-    playerBall.reposition(event.clientX, event.clientY);
-});
-
-function animate() {
-    requestAnimationFrame(animate);
-    ctx.clearRect(0, 0, innerWidth, innerHeight);
-
-    // Display count
-    ctx.fillStyle = '#FFF';
-    ctx.font = '18px Arial';
-    ctx.fillText(`Remaining Balls: ${30 - vanishedBalls}`, 20, 50);
-
-    // Update and filter balls
-    for (let i = balls.length - 1; i >= 0; i--) {
-        if (balls[i] !== playerBall && playerBall.collidesWith(balls[i])) {
-            balls.splice(i, 1);
-            vanishedBalls++;
-        } else {
-            balls[i].move();
-        }
-    }
-}
-
-animate();
+    moveTowards(targetX, targetY) {
+        let speed = 5; // Adjust speed here for smoothness
+        let angle = Math.atan2(targetY - this.y, targetX - this.x);
+        this.dx = Math.cos(angle) * speed;
+        this.dy = Math.sin(angle) * speed;
+        this.x
