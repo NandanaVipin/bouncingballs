@@ -51,9 +51,13 @@ class Ball {
         this.draw();
     }
 
-    reposition(x, y) {
-        this.x = x;
-        this.y = y;
+    moveTowards(targetX, targetY) {
+        let speed = 5; // Adjust speed for smoothness
+        let angle = Math.atan2(targetY - this.y, targetX - this.x);
+        this.dx = Math.cos(angle) * speed;
+        this.dy = Math.sin(angle) * speed;
+        this.x += this.dx;
+        this.y += this.dy;
     }
 
     collidesWith(other) {
@@ -81,9 +85,14 @@ for (let i = 0; i < 30; i++) {
 const playerBall = new Ball(innerWidth / 2, innerHeight / 2, 20, 0, 0, '#FFF', true);
 balls.push(playerBall);
 
-// Track mouse movement to move player ball
+// Cursor target position
+let targetX = playerBall.x;
+let targetY = playerBall.y;
+
+// Track mouse movement smoothly
 window.addEventListener('mousemove', (event) => {
-    playerBall.reposition(event.clientX, event.clientY);
+    targetX = event.clientX;
+    targetY = event.clientY;
 });
 
 function animate() {
@@ -103,10 +112,3 @@ function animate() {
         } else {
             balls[i].move();
         }
-    }
-
-    // Ensure playerBall is drawn after everything else
-    playerBall.draw();
-}
-
-animate();
