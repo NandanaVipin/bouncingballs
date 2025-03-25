@@ -81,6 +81,11 @@ for (let i = 0; i < 30; i++) {
 const playerBall = new Ball(innerWidth / 2, innerHeight / 2, 20, 0, 0, '#FFF', true);
 balls.push(playerBall);
 
+// Track mouse movement to move player ball
+window.addEventListener('mousemove', (event) => {
+    playerBall.reposition(event.clientX, event.clientY);
+});
+
 function animate() {
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, innerWidth, innerHeight);
@@ -102,5 +107,3 @@ function animate() {
 }
 
 animate();
-
-//
