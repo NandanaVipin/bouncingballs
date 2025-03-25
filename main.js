@@ -18,17 +18,17 @@ function randomRGB() {
 }
 
 class Shape {
-  constructor(x, y, velX, velY) {
+  constructor(x, y) {
     this.x = x;
     this.y = y;
-    this.velX = velX;
-    this.velY = velY;
   }
 }
 
 class Ball extends Shape {
   constructor(x, y, velX, velY, color, size) {
-    super(x, y, velX, velY);
+    super(x, y);
+    this.velX = velX;
+    this.velY = velY;
     this.color = color;
     this.size = size;
     this.exists = true;
@@ -70,11 +70,12 @@ class Ball extends Shape {
 
 class EvilCircle extends Shape {
   constructor(x, y) {
-    super(x, y, 0, 0);
-    this.color = "white";
+    super(x, y);
     this.size = 10;
+    this.color = "white";
     this.targetX = x;
     this.targetY = y;
+    this.speed = 5; // Adjust speed for natural movement
 
     // Listen for mouse movement and update target position
     window.addEventListener('mousemove', (e) => {
@@ -92,10 +93,15 @@ class EvilCircle extends Shape {
   }
 
   moveTowardsTarget() {
-    let speed = 5; // Adjust speed for smoothness
-    let angle = Math.atan2(this.targetY - this.y, this.targetX - this.x);
-    this.x += Math.cos(angle) * speed;
-    this.y += Math.sin(angle) * speed;
+    let dx = this.targetX - this.x;
+    let dy = this.targetY - this.y;
+    let distance = Math.sqrt(dx * dx + dy * dy);
+
+    // Move only if the distance is significant
+    if (distance > 1) {
+      this.x += (dx / distance) * this.speed;
+      this.y += (dy / distance) * this.speed;
+    }
   }
 
   collisionDetect() {
@@ -148,7 +154,7 @@ function loop() {
     }
   }
 
-  evilBall.moveTowardsTarget(); // Move the evil circle towards the cursor
+  evilBall.moveTowardsTarget(); // Now actually moves!
   evilBall.draw();
   evilBall.collisionDetect();
 
